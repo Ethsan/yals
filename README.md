@@ -6,17 +6,15 @@ simply a port of the vscode extension
 
 ## Features
 
-This extension provides full syntax highlight for these languages.
-
-This extension also supports some basic language features such as:
+This LSP server supports basic language features such as:
 
 - [x] Code diagnostic
 - [x] Auto-completion
 - [x] Hover
-- [ ] Go to Definition
-- [ ] Go to Type Definition
-- [ ] Find references
-- [ ] Rename Symbol
+- [x] Go to Definition
+- [x] Go to Type Definition
+- [x] Find references
+- [x] Rename Symbol
 
 ## Thanks
 

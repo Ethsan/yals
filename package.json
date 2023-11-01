@@ -1,7 +1,7 @@
 {
 	"name": "yals",
 	"description": "Language server for Bison/Flex & Yacc/Lex.",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"author": "Ethan Milon",
 	"license": "MIT",
 	"engines": {

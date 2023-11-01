@@ -15,6 +15,10 @@ import {
 	TextDocumentSyncKind,
 	InitializeResult,
 	CompletionList,
+	DefinitionParams,
+	TypeDefinitionParams,
+	RenameParams,
+	ReferenceParams,
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -64,6 +68,7 @@ connection.onInitialize((params: InitializeParams) => {
 				triggerCharacters: [' ', '%', '<', '{'],
 			},
 			definitionProvider: true,
+			typeDefinitionProvider: true,
 			referencesProvider: true,
 			hoverProvider: true,
 			renameProvider: true,
@@ -173,29 +178,26 @@ connection.onDidChangeWatchedFiles((_change) => {
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
 	(
-		textDocumentPosition: TextDocumentPositionParams,
+		params: TextDocumentPositionParams,
 	): CompletionItem[] | CompletionList | undefined => {
 		// The pass parameter contains the position of the text document in
 		// which code complete got requested. For the example we ignore this
 		// info and always provide the same completion items.
-		const document = documents.get(
-			textDocumentPosition.textDocument.uri,
-		);
+		const document = documents.get(params.textDocument.uri);
 		if (!document) {
 			return;
 		}
-
 		const mode = languageModes.getMode(document.languageId);
 		if (!mode || !mode.doComplete) {
 			return;
 		}
 
-		return mode.doComplete(document, textDocumentPosition.position);
+		return mode.doComplete(document, params.position);
 	},
 );
 
-connection.onHover((hoverParams: HoverParams): Hover | null => {
-	const document = documents.get(hoverParams.textDocument.uri);
+connection.onHover((params: HoverParams): Hover | null => {
+	const document = documents.get(params.textDocument.uri);
 	if (!document) {
 		return null;
 	}
@@ -203,9 +205,56 @@ connection.onHover((hoverParams: HoverParams): Hover | null => {
 	if (!mode || !mode.doHover) {
 		return null;
 	}
-	return mode.doHover(document, hoverParams.position);
+	return mode.doHover(document, params.position);
 });
 
+connection.onDefinition((params: DefinitionParams) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return null;
+	}
+	const mode = languageModes.getMode(document.languageId);
+	if (!mode || !mode.findDefinition) {
+		return null;
+	}
+	return mode.findDefinition(document, params.position);
+});
+
+connection.onTypeDefinition((params: TypeDefinitionParams) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return null;
+	}
+	const mode = languageModes.getMode(document.languageId);
+	if (!mode || !mode.findTypeDefinition) {
+		return null;
+	}
+	return mode.findTypeDefinition(document, params.position);
+});
+
+connection.onRenameRequest((params: RenameParams) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return null;
+	}
+	const mode = languageModes.getMode(document.languageId);
+	if (!mode || !mode.doRename) {
+		return null;
+	}
+	return mode.doRename(document, params.position, params.newName);
+});
+
+connection.onReferences((params: ReferenceParams) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return null;
+	}
+	const mode = languageModes.getMode(document.languageId);
+	if (!mode || !mode.findReferences) {
+		return null;
+	}
+	return mode.findReferences(document, params.position);
+});
 // Make the text document manager listen on the connection
 // for open, change and close text document events
 documents.listen(connection);
