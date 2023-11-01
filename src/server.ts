@@ -19,11 +19,13 @@ import {
 	TypeDefinitionParams,
 	RenameParams,
 	ReferenceParams,
+	SemanticTokensParams,
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { getLanguageModes } from './modes/languageModes';
+import { newSemanticTokenProvider } from './modes/semanticProvider';
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -40,6 +42,7 @@ let hasWorkspaceFolderCapability = false;
 let _hasDiagnosticRelatedInformationCapability = false;
 
 const languageModes = getLanguageModes({ yacc: true, lex: true });
+const semanticProvider = newSemanticTokenProvider(languageModes);
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
@@ -72,6 +75,16 @@ connection.onInitialize((params: InitializeParams) => {
 			referencesProvider: true,
 			hoverProvider: true,
 			renameProvider: true,
+			semanticTokensProvider: {
+				legend: {
+					tokenTypes: semanticProvider.legend
+						.types,
+					tokenModifiers:
+						semanticProvider.legend
+							.modifiers,
+				},
+				full: true,
+			},
 		},
 	};
 	if (hasWorkspaceFolderCapability) {
@@ -255,6 +268,15 @@ connection.onReferences((params: ReferenceParams) => {
 	}
 	return mode.findReferences(document, params.position);
 });
+
+connection.languages.semanticTokens.on((params: SemanticTokensParams) => {
+	const document = documents.get(params.textDocument.uri);
+	if (!document) {
+		return { data: [] };
+	}
+	return semanticProvider.getSemanticTokens(document);
+});
+
 // Make the text document manager listen on the connection
 // for open, change and close text document events
 documents.listen(connection);

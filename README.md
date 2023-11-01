@@ -15,6 +15,7 @@ This LSP server supports basic language features such as:
 - [x] Go to Type Definition
 - [x] Find references
 - [x] Rename Symbol
+- [x] Semantic tokens
 
 ## Thanks
 
