@@ -366,7 +366,7 @@ export function parse(text: string): YACCDocument {
 					lastNode.typeEnd =
 						scanner.getTokenOffset();
 				break;
-			case TokenType.TypeValue:
+			case TokenType.TypeValue: {
 				// extract the type inside the tag <[type]>
 				type = scanner.getTokenText();
 				const t = document.types[type];
@@ -384,6 +384,7 @@ export function parse(text: string): YACCDocument {
 					);
 				}
 				break;
+			}
 			case TokenType.RulesTag:
 				// start of the rule section
 				if (lastNode !== undefined) {
@@ -399,7 +400,7 @@ export function parse(text: string): YACCDocument {
 				end++;
 				state = ParserState.WaitingRule;
 				break;
-			case TokenType.Word:
+			case TokenType.Word: {
 				const word = scanner.getTokenText();
 				switch (state) {
 					case ParserState.Normal:
@@ -473,9 +474,11 @@ export function parse(text: string): YACCDocument {
 						);
 				}
 				break;
+			}
 			case TokenType.Colon:
 				switch (state) {
-					case ParserState.WaitingRule: // we maybe found a new non-terminal symbol definition
+					case ParserState.WaitingRule: {
+						// we maybe found a new non-terminal symbol definition
 						if (
 							lastToken !==
 								TokenType.Word &&
@@ -602,6 +605,7 @@ export function parse(text: string): YACCDocument {
 							};
 						}
 						break;
+					}
 					default:
 						addProblem(
 							`Unexpected : character`,
@@ -624,6 +628,7 @@ export function parse(text: string): YACCDocument {
 					switch (lastToken) {
 						case TokenType.Word:
 							symbol = lastText;
+						// eslint-disable-next-line no-fallthrough
 						case TokenType.EndAction:
 							document.namedReferences[
 								scanner.getTokenText()

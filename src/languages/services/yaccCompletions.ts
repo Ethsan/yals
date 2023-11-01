@@ -81,7 +81,7 @@ export function doYACCComplete(
 		return [];
 	}
 
-	let result: CompletionItem[] = [];
+	const result: CompletionItem[] = [];
 	switch (node.nodeType) {
 		case NodeType.Token:
 		case NodeType.Type:

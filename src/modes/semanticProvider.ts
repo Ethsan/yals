@@ -32,7 +32,7 @@ export function newSemanticTokenProvider(
 	const legend = { types: [], modifiers: [] };
 	const legendMappings: { [modeId: string]: LegendMapping } = {};
 
-	for (let mode of languageModes.getAllModes()) {
+	for (const mode of languageModes.getAllModes()) {
 		if (mode.getSemanticTokenLegend && mode.getSemanticTokens) {
 			const modeLegend = mode.getSemanticTokenLegend();
 			legendMappings[mode.getId()] = {
@@ -52,10 +52,10 @@ export function newSemanticTokenProvider(
 		legend,
 		getSemanticTokens(
 			document: TextDocument,
-			ranges?: Range[],
+			_ranges?: Range[],
 		): SemanticTokens {
 			const builder = new SemanticTokensBuilder();
-			for (let mode of languageModes.getAllModes()) {
+			for (const mode of languageModes.getAllModes()) {
 				if (mode.getSemanticTokens) {
 					const mapping =
 						legendMappings[mode.getId()];
@@ -111,7 +111,7 @@ function applyTypesMapping(
 	typesMapping: number[] | undefined,
 ): void {
 	if (typesMapping) {
-		for (let token of tokens) {
+		for (const token of tokens) {
 			token.typeIdx = typesMapping[token.typeIdx];
 		}
 	}
@@ -122,7 +122,7 @@ function applyModifiersMapping(
 	modifiersMapping: number[] | undefined,
 ): void {
 	if (modifiersMapping) {
-		for (let token of tokens) {
+		for (const token of tokens) {
 			let modifierSet = token.modifierSet;
 			if (modifierSet) {
 				let index = 0;

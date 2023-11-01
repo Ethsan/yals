@@ -103,7 +103,7 @@ export function createScanner(
 		}
 
 		switch (state) {
-			case ScannerState.WithinContent:
+			case ScannerState.WithinContent: {
 				const ch = stream.nextChar();
 				switch (ch) {
 					case _FSL: // /
@@ -171,6 +171,7 @@ export function createScanner(
 
 				stream.advance(1);
 				return finishToken(offset, TokenType.Unknown);
+			}
 			case ScannerState.WithinComment:
 				if (stream.advanceIfChars([_AST, _FSL])) {
 					// */
@@ -182,7 +183,7 @@ export function createScanner(
 				}
 				stream.advanceUntilChars([_AST, _FSL]); // */
 				return finishToken(offset, TokenType.Comment);
-			case ScannerState.WithinDefinition:
+			case ScannerState.WithinDefinition: {
 				if (stream.advanceIfChar(_BCL)) {
 					// }
 					state = ScannerState.WithinContent;
@@ -191,7 +192,7 @@ export function createScanner(
 						TokenType.EndDefinition,
 					);
 				}
-				var brackets = 1;
+				let brackets = 1;
 				while (brackets > 0) {
 					const ch = stream.nextChar();
 					switch (ch) {
@@ -246,6 +247,7 @@ export function createScanner(
 					offset,
 					TokenType.Definition,
 				);
+			}
 		}
 		state = ScannerState.WithinContent;
 		return finishToken(
@@ -338,6 +340,7 @@ export function parse(text: string): YYType[] {
 				if (type !== undefined) {
 					type.type.push(scanner.getTokenText());
 				}
+			// eslint-disable-next-line no-fallthrough
 			case TokenType.Definition:
 				// if (type !== undefined) {
 				//     const recursive = parse(scanner.getTokenText());

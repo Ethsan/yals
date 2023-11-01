@@ -98,7 +98,7 @@ export function createScanner(
 		}
 
 		switch (state) {
-			case ScannerState.WithinContent:
+			case ScannerState.WithinContent: {
 				const ch = stream.nextChar();
 				switch (ch) {
 					case _FSL: // /
@@ -215,7 +215,8 @@ export function createScanner(
 							TokenType.EOL,
 						);
 					case _DQO: // "
-					case _SQO: // '
+					case _SQO: {
+						// '
 						stream.goBack(1);
 						const literal = nextLiteral();
 						if (literal.length > 0) {
@@ -229,6 +230,7 @@ export function createScanner(
 							offset,
 							TokenType.Unknown,
 						);
+					}
 					case _BSL: // \
 						stream.advance(1); // include the next escaped character
 						return finishToken(
@@ -249,6 +251,7 @@ export function createScanner(
 
 				stream.advance(1);
 				return finishToken(offset, TokenType.Unknown);
+			}
 			case ScannerState.WithinComment:
 				if (stream.advanceIfChars([_AST, _FSL])) {
 					// */
@@ -271,7 +274,7 @@ export function createScanner(
 				}
 				stream.advanceUntilChars([_PCS, _BCL]);
 				return finishToken(offset, TokenType.Code);
-			case ScannerState.WithinAction:
+			case ScannerState.WithinAction: {
 				if (stream.advanceIfChar(_BCL)) {
 					// }
 					state = ScannerState.WithinContent;
@@ -280,8 +283,8 @@ export function createScanner(
 						TokenType.EndAction,
 					);
 				}
-				var exit = false;
-				var brackets = 1;
+				let exit = false;
+				let brackets = 1;
 				while (!exit && brackets > 0) {
 					const ch = stream.nextChar();
 					switch (ch) {
@@ -349,6 +352,7 @@ export function createScanner(
 				}
 				if (!exit) stream.goBack(1);
 				return finishToken(offset, TokenType.Action);
+			}
 			case ScannerState.WithinPredefined:
 				if (stream.advanceIfChars([_RAN, _RAN])) {
 					// >>

@@ -5,21 +5,16 @@
 import {
 	createConnection,
 	TextDocuments,
-	Diagnostic,
-	DiagnosticSeverity,
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	CompletionItem,
-	CompletionItemKind,
 	TextDocumentPositionParams,
 	Hover,
 	HoverParams,
 	TextDocumentSyncKind,
 	InitializeResult,
-	CancellationToken,
 	CompletionList,
-	Disposable,
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
@@ -38,7 +33,7 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
+let _hasDiagnosticRelatedInformationCapability = false;
 
 const languageModes = getLanguageModes({ yacc: true, lex: true });
 
@@ -54,7 +49,7 @@ connection.onInitialize((params: InitializeParams) => {
 		capabilities.workspace &&
 		!!capabilities.workspace.workspaceFolders
 	);
-	hasDiagnosticRelatedInformationCapability = !!(
+	_hasDiagnosticRelatedInformationCapability = !!(
 		capabilities.textDocument &&
 		capabilities.textDocument.publishDiagnostics &&
 		capabilities.textDocument.publishDiagnostics.relatedInformation
@@ -130,7 +125,7 @@ connection.onDidChangeConfiguration((change) => {
 	documents.all().forEach(validateTextDocument);
 });
 
-function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
+function _getDocumentSettings(resource: string): Thenable<ExampleSettings> {
 	if (!hasConfigurationCapability) {
 		return Promise.resolve(globalSettings);
 	}

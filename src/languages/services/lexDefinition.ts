@@ -1,9 +1,4 @@
-import {
-	Position,
-	Definition,
-	Location,
-	Range,
-} from 'vscode-languageserver/node';
+import { Position, Definition, Location } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
@@ -24,7 +19,7 @@ export function doLEXFindDefinition(
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
-	var symbol: ISymbol | undefined =
+	const symbol: ISymbol | undefined =
 		lexDocument.defines[word] || lexDocument.states[word];
 	let location: Location | null = null;
 	if (symbol) {

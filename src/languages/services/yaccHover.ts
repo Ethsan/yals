@@ -15,7 +15,7 @@ export function doYACCHover(
 		return null;
 	}
 
-	var symbol: ISymbol;
+	let symbol: ISymbol;
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
@@ -25,7 +25,7 @@ export function doYACCHover(
 		if (node.typeOffset && offset > node.typeOffset) {
 			if (!node.typeEnd || offset <= node.typeEnd) {
 				if ((symbol = yaccDocument.types[word])) {
-					message = createMarkedCodeString(
+					const message = createMarkedCodeString(
 						symbol.type,
 						'yacc',
 					);
@@ -36,7 +36,7 @@ export function doYACCHover(
 		}
 	}
 
-	var message: MarkupContent = { kind: 'plaintext', value: '' };
+	let message: MarkupContent = { kind: 'plaintext', value: '' };
 	if ((symbol = yaccDocument.symbols[word])) {
 		/*
 		const config = workspace.getConfiguration('yash');

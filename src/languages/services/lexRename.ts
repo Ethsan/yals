@@ -20,7 +20,7 @@ export function doLEXRename(
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
-	var symbol: ISymbol | undefined =
+	const symbol: ISymbol | undefined =
 		lexDocument.defines[word] || lexDocument.states[word];
 	const textEdits: TextEdit[] = [];
 	symbol?.references.forEach((reference) => {

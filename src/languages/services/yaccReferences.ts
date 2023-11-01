@@ -18,12 +18,12 @@ export function doYACCFindReferences(
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
-	var symbol: ISymbol | undefined =
+	const symbol: ISymbol | undefined =
 		yaccDocument.types[word] ||
 		yaccDocument.symbols[word] ||
 		yaccDocument.tokens[word] ||
 		yaccDocument.aliases[`"${word}"`];
-	let location: Location[] = [];
+	const location: Location[] = [];
 	symbol?.references.forEach((reference) => {
 		const range = {
 			start: document.positionAt(reference[0]),

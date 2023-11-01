@@ -122,7 +122,7 @@ export class MultiLineStream {
 	}
 
 	public advanceIfRegExp(regex: RegExp): string {
-		const str = this.source.substr(this.position);
+		const str = this.source.substring(this.position);
 		const match = str.match(regex);
 		if (match) {
 			this.position =
@@ -133,7 +133,7 @@ export class MultiLineStream {
 	}
 
 	public advanceUntilRegExp(regex: RegExp): string {
-		const str = this.source.substr(this.position);
+		const str = this.source.substring(this.position);
 		const match = str.match(regex);
 		if (match) {
 			this.position = this.position + match.index!;
@@ -157,13 +157,13 @@ export class MultiLineStream {
 	public advanceUntilChars(ch: number[]): boolean {
 		while (this.position + ch.length <= this.source.length) {
 			let i = 0;
-			for (
-				;
+			while (
 				i < ch.length &&
 				this.source.charCodeAt(this.position + i) ===
-					ch[i];
-				i++
-			) {}
+					ch[i]
+			) {
+				i++;
+			}
 			if (i === ch.length) {
 				return true;
 			}

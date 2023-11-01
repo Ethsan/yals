@@ -1,9 +1,4 @@
-import {
-	Position,
-	Definition,
-	Location,
-	Range,
-} from 'vscode-languageserver/node';
+import { Position, Definition, Location } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { YACCDocument, ISymbol } from '../parser/yaccParser';
@@ -23,7 +18,7 @@ export function doYACCFindDefinition(
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
-	var symbol: ISymbol | undefined =
+	const symbol: ISymbol | undefined =
 		yaccDocument.types[word] ||
 		yaccDocument.symbols[word] ||
 		yaccDocument.tokens[word] ||

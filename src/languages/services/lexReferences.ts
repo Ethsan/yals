@@ -1,4 +1,4 @@
-import { Position, Location, Range } from 'vscode-languageserver/node';
+import { Position, Location } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { LexDocument, ISymbol } from '../parser/lexParser';
@@ -18,9 +18,9 @@ export function doLEXFindReferences(
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
-	var symbol: ISymbol | undefined =
+	const symbol: ISymbol | undefined =
 		lexDocument.defines[word] || lexDocument.states[word];
-	let location: Location[] = [];
+	const location: Location[] = [];
 	symbol?.references.forEach((reference) => {
 		location.push({
 			uri: document.uri,

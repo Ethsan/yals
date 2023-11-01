@@ -87,7 +87,7 @@ export function createScanner(
 		}
 
 		switch (state) {
-			case ScannerState.WithinContent:
+			case ScannerState.WithinContent: {
 				const ch = stream.nextChar();
 				switch (ch) {
 					case _FSL: // /
@@ -193,7 +193,8 @@ export function createScanner(
 							TokenType.StartType,
 						);
 					case _DQO: // "
-					case _SQO: // '
+					case _SQO: {
+						// '
 						stream.goBack(1);
 						const literal = nextLiteral();
 						if (literal.length > 0) {
@@ -207,7 +208,9 @@ export function createScanner(
 							offset,
 							TokenType.Unknown,
 						);
-					case _SBO: // [
+					}
+					case _SBO: {
+						// [
 						stream.goBack(1);
 						const param = nextParam();
 						if (param.length > 0) {
@@ -221,6 +224,7 @@ export function createScanner(
 							offset,
 							TokenType.Unknown,
 						);
+					}
 					case _SCL:
 						return finishToken(
 							offset,
@@ -248,7 +252,8 @@ export function createScanner(
 
 				stream.advance(1);
 				return finishToken(offset, TokenType.Unknown);
-			case ScannerState.WithinTypeValue:
+			}
+			case ScannerState.WithinTypeValue: {
 				if (stream.advanceIfChar(_RAN)) {
 					// >
 					state = ScannerState.WithinContent;
@@ -268,6 +273,7 @@ export function createScanner(
 				stream.advance(1);
 				state = ScannerState.WithinContent;
 				return finishToken(offset, TokenType.Unknown);
+			}
 			case ScannerState.WithinComment:
 				if (stream.advanceIfChars([_AST, _FSL])) {
 					// */
@@ -279,7 +285,7 @@ export function createScanner(
 				}
 				stream.advanceUntilChars([_AST, _FSL]); // */
 				return finishToken(offset, TokenType.Comment);
-			case ScannerState.WithinCode:
+			case ScannerState.WithinCode: {
 				if (stream.advanceIfChar(_BCL)) {
 					// }
 					state = ScannerState.WithinContent;
@@ -288,7 +294,7 @@ export function createScanner(
 						TokenType.EndAction,
 					);
 				}
-				var brackets = 1;
+				let brackets = 1;
 				while (brackets > 0) {
 					const ch = stream.nextChar();
 					switch (ch) {
@@ -349,6 +355,7 @@ export function createScanner(
 				}
 				stream.goBack(1);
 				return finishToken(offset, TokenType.Action);
+			}
 		}
 		state = ScannerState.WithinContent;
 		return finishToken(

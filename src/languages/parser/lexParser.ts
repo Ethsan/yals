@@ -133,7 +133,6 @@ export function parse(
 
 	let end = -2;
 	// let state = ParserState.WaitingDecl;
-	let type = '';
 	let token = scanner.scan();
 	let offset = 0;
 	let codeOffset = 0;
@@ -182,7 +181,7 @@ export function parse(
 						scanner.disableMultiLineBrackets();
 						state = ParserState.WaitingDef;
 						break;
-					case TokenType.Option:
+					case TokenType.Option: {
 						state =
 							ParserState.WaitingOptionParams;
 						const ch = scanner
@@ -195,6 +194,7 @@ export function parse(
 							acceptingStates = true;
 						}
 						break;
+					}
 					case TokenType.RulesTag:
 						state = ParserState.WaitingRule;
 						end++;
@@ -270,11 +270,12 @@ export function parse(
 						break;
 					case TokenType.Predefined:
 						break;
-					case TokenType.States: // found initial states
+					case TokenType.States: {
+						// found initial states
 						tokenText =
 							scanner.getTokenText();
 						const matcher = /\w+/g;
-						var match;
+						let match;
 						while (
 							(match =
 								matcher.exec(
@@ -310,6 +311,7 @@ export function parse(
 							);
 						}
 						break;
+					}
 					case TokenType.StartAction:
 						isConditionScope =
 							lastToken ===

@@ -103,7 +103,7 @@ export function getLanguageModes(supportedLanguages: {
 	const yaccLanguageService = getYACCLanguageService();
 	const lexLanguageService = getLEXLanguageService();
 
-	let modelCaches: DocumentCache<any>[] = [];
+	let modelCaches: DocumentCache<unknown>[] = [];
 
 	let modes = Object.create(null);
 	if (supportedLanguages['yacc']) {
@@ -116,9 +116,9 @@ export function getLanguageModes(supportedLanguages: {
 
 	return {
 		getAllModes(): LanguageMode[] {
-			let result = [];
-			for (let languageId in modes) {
-				let mode = modes[languageId];
+			const result = [];
+			for (const languageId in modes) {
+				const mode = modes[languageId];
 				if (mode) {
 					result.push(mode);
 				}
@@ -132,14 +132,14 @@ export function getLanguageModes(supportedLanguages: {
 			modelCaches.forEach((mc) =>
 				mc.onDocumentRemoved(document),
 			);
-			for (let mode in modes) {
+			for (const mode in modes) {
 				modes[mode].onDocumentRemoved(document);
 			}
 		},
 		dispose(): void {
 			modelCaches.forEach((mc) => mc.dispose());
 			modelCaches = [];
-			for (let mode in modes) {
+			for (const mode in modes) {
 				modes[mode].dispose();
 			}
 			modes = {};

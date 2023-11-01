@@ -8,7 +8,6 @@ import {
 	Hover,
 	CompletionList,
 	CompletionItem,
-	Range,
 	Definition,
 	Location,
 } from 'vscode-languageserver/node';

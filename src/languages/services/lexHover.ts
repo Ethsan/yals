@@ -23,7 +23,7 @@ export function doLEXHover(
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
-	var symbol: ISymbol =
+	const symbol: ISymbol =
 		lexDocument.defines[word] || lexDocument.states[word];
 	if (symbol) {
 		const line = getLineAt(

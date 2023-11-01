@@ -20,7 +20,7 @@ export function doYACCRename(
 	const word = document.getText(
 		getWordRangeAtPosition(document, position),
 	);
-	var symbol: ISymbol | undefined =
+	const symbol: ISymbol | undefined =
 		yaccDocument.types[word] ||
 		yaccDocument.symbols[word] ||
 		yaccDocument.tokens[word] ||
